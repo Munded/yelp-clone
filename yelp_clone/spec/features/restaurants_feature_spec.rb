@@ -1,6 +1,16 @@
 require 'rails_helper'
 
 feature 'restaurants' do
+
+  before(:each) do
+    visit 'users/sign_up'
+    fill_in 'Email', with: 'name@name.com'
+    fill_in 'Password', with: '12345678'
+    fill_in 'Password confirmation', with: '12345678'
+    click_button 'Sign up'
+
+  end
+
   context 'no restaurants have been added' do
     scenario 'should display a prompt to add a restaurant' do
       visit '/restaurants'
@@ -8,6 +18,7 @@ feature 'restaurants' do
       expect(page).to have_link 'Add a restaurant'
     end
   end
+
   context 'restaurants have been added' do
     before do
       Restaurant.create(name: 'KFC')
@@ -21,6 +32,7 @@ feature 'restaurants' do
   end
 
   context 'creating restaurants' do
+
     scenario 'prompts user to fill out a form, then displays the new restaurant' do
       visit '/restaurants'
       click_link 'Add a restaurant'
@@ -39,6 +51,14 @@ feature 'restaurants' do
         expect(page).not_to have_css 'h2', text: 'kf'
         expect(page).to have_content 'error'
       end
+    end
+
+    scenario 'prompts user to sign in when creating a restaurant whilst signed out' do
+      click_link 'Sign out'
+      visit '/restaurants'
+      click_link 'Add a restaurant'
+      expect(page).to have_content 'You need to sign in or sign up before continuing'
+      expect(current_path).to eq '/users/sign_in'
     end
 
   end
@@ -72,13 +92,24 @@ feature 'restaurants' do
 
   context 'deleting restaurants' do
 
-    before {Restaurant.create name: 'KFC'}
+    before(:each) do
+      visit '/restaurants'
+      click_link 'Add a restaurant'
+      fill_in 'Name', with: 'KFC'
+      click_button 'Create Restaurant'
+    end
 
     scenario 'removes a restaurant when a user clicks a delete link' do
       visit '/restaurants'
       click_link 'Delete KFC'
       expect(page).not_to have_content 'KFC'
       expect(page).to have_content 'Restaurant Deleted successfully'
+    end
+
+    scenario 'cannot remove a restaurant if did not create' do
+      click_link 'Sign out'
+      click_link 'Delete KFC'
+      expect(page).to have_content 'KFC'
     end
   end
 
