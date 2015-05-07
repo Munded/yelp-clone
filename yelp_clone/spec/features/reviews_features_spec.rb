@@ -1,6 +1,9 @@
 require 'rails_helper'
+require 'helpers/helper_spec'
 
 feature 'reviewing' do
+  include Restaurant_Helper
+
   before {Restaurant.create name: 'KFC'}
 
   before(:each) do
@@ -11,26 +14,18 @@ feature 'reviewing' do
     click_button 'Sign up'
   end
 
-  def submit_review
-    visit '/restaurants'
-    click_link 'Review KFC'
-    fill_in "Thoughts", with: "so so"
-    select '3', from: 'Rating'
-    click_button 'Leave Review'
-  end
-
-  def alt_sign_up
-    visit 'users/sign_up'
-    fill_in 'Email', with: 'bob@name.com'
-    fill_in 'Password', with: '12345678'
-    fill_in 'Password confirmation', with: '12345678'
-    click_button 'Sign up'
-  end
 
   scenario 'allows users to leave a review using a form' do
     submit_review
     expect(current_path).to eq '/restaurants'
     expect(page).to have_content('so so')
+  end
+
+  scenario 'user can only leave one review per restaurants' do
+    submit_review
+    submit_alt_review
+    expect(current_path).to eq '/restaurants'
+    expect(page).to have_content 'already reviewed this restaurant' 
   end
 
   scenario 'user that created review can delete it' do

@@ -10,7 +10,12 @@ class ReviewsController < ApplicationController
     review = @restaurant.reviews.create(review_params)
     review.user = current_user
     review.save
-    redirect_to restaurants_path
+    if review.save
+      redirect_to restaurants_path
+    else
+      flash[:notice] = 'already reviewed this restaurant'
+      redirect_to restaurants_path
+    end
   end
 
   def review_params
@@ -22,11 +27,10 @@ class ReviewsController < ApplicationController
     if current_user == @review.user
       @review.destroy
       flash[:notice] = 'Review Deleted Successfully'
-      redirect_to '/restaurants'
     else 
       flash[:notice] = "Cannot Delete Review"
-      redirect_to '/restaurants'
     end
+    redirect_to '/restaurants'
   end
 
 end

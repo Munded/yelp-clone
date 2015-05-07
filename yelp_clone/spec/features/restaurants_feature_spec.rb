@@ -1,18 +1,12 @@
 require 'rails_helper'
+require 'helpers/helper_spec'
 
 feature 'restaurants' do
+  include Restaurant_Helper
 
   before(:each) do
     visit 'users/sign_up'
     fill_in 'Email', with: 'name@name.com'
-    fill_in 'Password', with: '12345678'
-    fill_in 'Password confirmation', with: '12345678'
-    click_button 'Sign up'
-  end
-
-  def alt_sign_up
-    visit 'users/sign_up'
-    fill_in 'Email', with: 'bob@name.com'
     fill_in 'Password', with: '12345678'
     fill_in 'Password confirmation', with: '12345678'
     click_button 'Sign up'
