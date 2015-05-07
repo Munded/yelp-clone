@@ -42,4 +42,11 @@ feature 'reviewing' do
     expect(page).not_to have_content('so so')
   end
 
+  scenario 'displays an average rating' do
+    submit_review
+    click_link 'Sign out'
+    alt_sign_up
+    submit_alt_review
+    expect(page).to have_content('Average rating: 4')
+  end
 end
