@@ -11,7 +11,7 @@
               <li>
                 <%= review.thoughts %>, <strong><%= review.rating %></strong>/5
               </li>
-            
+               <%= link_to "Delete Review", restaurant_review_path(review, review.id), method: :delete %>
 
             <% end %>
           </ul>

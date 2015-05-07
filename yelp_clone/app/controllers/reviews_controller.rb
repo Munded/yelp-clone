@@ -7,7 +7,9 @@ class ReviewsController < ApplicationController
 
   def create
     @restaurant = Restaurant.find(params[:restaurant_id])
-    @restaurant.reviews.create(review_params)
+    review = @restaurant.reviews.create(review_params)
+    review.user = current_user
+    review.save
     redirect_to restaurants_path
   end
 
@@ -16,8 +18,8 @@ class ReviewsController < ApplicationController
   end
 
   def destroy
-    @reviews = Review.find(params[:id])
-    if current_user.id == @review.user_id
+    @review = Review.find(params[:id])
+    if current_user == @review.user
       @review.destroy
       flash[:notice] = 'Review Deleted Successfully'
       redirect_to '/restaurants'
