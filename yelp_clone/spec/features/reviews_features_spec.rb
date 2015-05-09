@@ -47,6 +47,6 @@ feature 'reviewing' do
     click_link 'Sign out'
     alt_sign_up
     submit_alt_review
-    expect(page).to have_content('Average rating: 4')
+    expect(page).to have_content('Average rating: ★★★★☆')
   end
 end

@@ -2,6 +2,7 @@ class Review < ActiveRecord::Base
 
   belongs_to :restaurant
   belongs_to :user
+  has_many :reviewed_restaurants, through: :reviews
   validates :rating, inclusion: (1..5)
-  validates_uniqueness_of :user, scope: :restaurant
+  validates :user, uniqueness: { scope: :restaurant }
 end
